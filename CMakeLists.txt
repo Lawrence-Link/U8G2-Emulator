@@ -21,10 +21,17 @@ set(SOURCES
     src/main.cpp
     src/emulator_backend.cpp
     src/emulator_headless.cpp
+    src/emulator_arg_parser.cpp
+    src/emulator_qt.cpp
+    src/u8g2_wrapper.cpp
+    src/u8x8_null.cpp
 )
 
 set(HEADERS
     include/emulator_backend.h
+    include/emulator_headless.h
+    include/emulator_arg_parser.h
+    include/u8g2_wrapper.h
 )
 
 # ==============================
