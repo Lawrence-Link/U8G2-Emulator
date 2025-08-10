@@ -9,7 +9,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-option(WITH_QT "Enable Qt GUI mode" ON)
+option(WITH_QT "Enable Qt GUI mode" OFF)
 
 # ==============================
 # 1. u8g2 submodule
@@ -17,22 +17,19 @@ option(WITH_QT "Enable Qt GUI mode" ON)
 add_subdirectory(third_party/u8g2 EXCLUDE_FROM_ALL)
 
 # ==============================
-# 2. 源码文件
+# 2. Source files
 # ==============================
 set(SOURCES
     src/main.cpp
-    src/emulator_backend.cpp
     src/emulator_headless.cpp
     src/emulator_arg_parser.cpp
     src/u8g2_wrapper.cpp
-    
 )
 
 set(HEADERS
-    include/emulator_backend.h
     include/emulator_arg_parser.h
     include/u8g2_wrapper.h
-    
+    include/emulator_headless.h
 )
 
 if(WITH_QT)

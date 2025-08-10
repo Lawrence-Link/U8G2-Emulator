@@ -1,19 +1,13 @@
 #include <iostream>
 #include "emulator_arg_parser.h"
 #include "u8g2_wrapper.h"
+#include "emulator_headless.h"
 
-#ifdef USE_QT_GUI
-#   include "QApplication"
-#   include "MainWindow.h"
-#   include "EmuWorker.h"
-#endif
-
-#ifdef USE_QT_GUI
+#include "QApplication"
+#include "MainWindow.h"
+#include "EmuWorker.h"
 
 U8G2Wrapper u8g2; // U8G2 wrapper instance, inherits from U8G2, use it like you would use U8G2 directly.
-
-
-//////// U8G2 Demo ////////
 
 void u8g2_prepare(void) {
   u8g2.setFont(u8g2_font_6x10_tf);
@@ -210,25 +204,12 @@ void draw(void) {
   }
 }
 
-//////////////////////////
-
 class EmulatorThread : public EmuWorker {
 public:
     void grandLoop() override {
-        u8g2.init();
+        
         while (running) {   // the pseudo main loop for your u8g2 code to run in.
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
-            // u8g2.clearBuffer();
-            // u8g2.setFont(u8g2_font_HelvetiPixelOutline_tr );
-            // // u8g2.drawStr(5, 20, "mua mua Garry");
-            // // u8g2.drawStr(5, 49, "From u8g2 emulator");
-
-            // u8g2.drawCircle(24, 52, 10); // draw a circle in the center of the display
-            // u8g2.drawCircle(54, 52, 10); // draw a smaller circle inside the first one
-            // u8g2.sendBuffer(); // send the buffer to the display
-            // emit updateRequested();
-
-            // picture loop  
             u8g2.clearBuffer();
             draw();
             u8g2.sendBuffer();
@@ -241,36 +222,16 @@ public:
     }
 };
 
-#endif
-
-
 
 int main(int argc, char *argv[]) {
-
-#ifndef USE_QT_GUI
-    std::cout << "U8G2 Emulator - Headless Mode" << std::endl;
-
-    auto args = ArgParser::parse(argc, argv);
-
-    U8G2Wrapper display(128,64);
-
-    display.init();
-    display.drawTestString("Hello emu!");
-
-    auto pixels = display.getFramebufferPixels();
-    for (const auto& row : pixels) {
-        for (bool pixel : row) {
-            std::cout << (pixel ? args.pixel_on : args.pixel_off);
-        }
-        std::cout << '\n';
-    }
-
-    return 0;
-#else
     std::cout << "U8G2 Emulator - Qt Windowed Mode" << std::endl;
 
     QApplication app(argc, argv);
-    MainWindow w;
+    u8g2.init();
+
+    // call this after u8g2.init(). otherwise the display size will be null
+    MainWindow w(nullptr, u8g2.getWidth(), u8g2.getHeight(), 10); // initial size 128x64, scale factor 10
+    
     w.show();
 
     EmulatorThread worker;
@@ -282,10 +243,8 @@ int main(int argc, char *argv[]) {
 
     worker.start();  // enable background thread for u8g2 emulation
     int ret = app.exec();
-    worker.stop();   // 退出时停止线程
+    worker.stop();   // stop the worker thread gracefully :)
 
     return ret;
-#endif
-    return -1;
 }
 

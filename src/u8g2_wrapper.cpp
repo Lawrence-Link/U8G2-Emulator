@@ -12,6 +12,11 @@ void U8G2Wrapper::init() {
 
     u8g2_InitDisplay(&u8g2);
     u8g2_SetPowerSave(&u8g2, 0);
+
+    // after initialization
+
+    width = getWidth();
+    height = getHeight();
 }
 
 void U8G2Wrapper::drawTestString(const char* str) {

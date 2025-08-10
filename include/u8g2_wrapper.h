@@ -12,9 +12,11 @@ public:
 
     void init();
     void drawTestString(const char* str);
+    int getWidth()   { return this->U8G2::getDisplayWidth();}
+    int getHeight()  { return this->U8G2::getDisplayHeight(); }
     std::vector<std::vector<bool>> getFramebufferPixels();
 
 private:
-    int width = 128;
-    int height = 64;
+    int width = 128;  // default width
+    int height = 64;  // default height
 };
