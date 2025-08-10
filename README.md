@@ -16,7 +16,7 @@ Get the `u8g2_emulator` example up and running on your system in just a few step
 
 1.  **Clone the repository and initialize submodules:**
     ```bash
-    git clone https://github.com/Lawrence-Link/u8g2-emulator.git
+    git clone https://github.com/Lawrence-Link/U8G2-Emulator.git
     cd u8g2_emulator
     git submodule update --init --recursive
     ```
