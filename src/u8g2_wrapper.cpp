@@ -1,15 +1,13 @@
 #include "u8g2_wrapper.h"
 #include "u8x8.h"
 
-extern "C" uint8_t u8x8_byte_null(u8x8_t*, uint8_t, uint8_t, void*);
-extern "C" uint8_t u8x8_gpio_and_delay_null(u8x8_t*, uint8_t, uint8_t, void*);
-
 void U8G2Wrapper::init() {
-    u8g2_Setup_ssd1306_128x64_noname_f(
+    // Initialize u8g2 structure with your desired display IC preset.
+    u8g2_Setup_ssd1306_128x64_noname_f( 
         &u8g2,
         U8G2_R0,
-        u8x8_byte_null,
-        u8x8_gpio_and_delay_null
+        u8x8_byte_empty,
+        u8x8_dummy_cb
     );
 
     u8g2_InitDisplay(&u8g2);
@@ -28,6 +26,8 @@ std::vector<std::vector<bool>> U8G2Wrapper::getFramebufferPixels() {
     size_t buffer_size = u8g2_GetBufferSize(&u8g2);
 
     int bytes_per_column = (height + 7) / 8;
+    
+    // pixel buffer is width * height, each column has `bytes_per_column` bytes.
     std::vector<std::vector<bool>> pixels(height, std::vector<bool>(width, false));
 
     for (int x = 0; x < width; ++x) {
@@ -37,11 +37,11 @@ std::vector<std::vector<bool>> U8G2Wrapper::getFramebufferPixels() {
             if (byte_index >= buffer_size) {
                 continue;
             }
-            uint8_t byte = buffer[byte_index];
+            uint8_t byte = buffer[byte_index]; 
             for (int bit = 0; bit < 8; ++bit) {
                 int y = byte_row * 8 + bit;
                 if (y >= height) break;
-                pixels[y][x] = (byte >> bit) & 1;
+                pixels[y][x] = (byte >> bit) & 1; // fill the buffer with the pixel state.
             }
         }
     }
