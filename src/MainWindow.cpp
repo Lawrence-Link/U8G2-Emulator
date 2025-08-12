@@ -61,3 +61,103 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     }
     update(); // 触发重绘
 }
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->isAutoRepeat())
+        return; // 忽略按住后持续的重复事件
+
+    switch (event->key())
+    {
+    case Qt::Key_Up:
+        if (!m_upPressed)
+        {
+            m_upPressed = true;
+            if (ptnr_up_callback)
+            {
+                // Call the registered callback for up key
+                reinterpret_cast<void(*)(void)>(ptnr_up_callback)();
+            }
+        }
+        break;
+
+    case Qt::Key_Down:
+        if (!m_downPressed)
+        {
+            m_downPressed = true;
+            if (ptnr_down_callback)
+            {
+                // Call the registered callback for down key
+                reinterpret_cast<void(*)(void)>(ptnr_down_callback)();
+            }
+        }
+        break;
+
+    case Qt::Key_Left:
+        if (!m_leftPressed)
+        {
+            m_leftPressed = true;
+            if (ptnr_left_callback)
+            {
+                // Call the registered callback for left key
+                reinterpret_cast<void(*)(void)>(ptnr_left_callback)();
+            }
+        }
+        break;
+
+    case Qt::Key_Right:
+        if (!m_rightPressed)
+        {
+            m_rightPressed = true;
+            if (ptnr_right_callback)
+            {
+                // Call the registered callback for right key
+                reinterpret_cast<void(*)(void)>(ptnr_right_callback)();
+            }
+        }
+        break;
+
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+        if (!m_enterPressed)
+        {
+            m_enterPressed = true;
+            if (ptnr_enter_callback)
+            {
+                // Call the registered callback for enter key
+                reinterpret_cast<void(*)(void)>(ptnr_enter_callback)();
+            }
+        }
+        break;
+
+    default:
+        QMainWindow::keyPressEvent(event);
+        break;
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+    case Qt::Key_Up:
+        m_upPressed = false;
+        break;
+    case Qt::Key_Down:
+        m_downPressed = false;
+        break;
+    case Qt::Key_Left:
+        m_leftPressed = false;
+        break;
+    case Qt::Key_Right:
+        m_rightPressed = false;
+        break;
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+        m_enterPressed = false;
+        break;
+    default:
+        break;
+    }
+    QMainWindow::keyReleaseEvent(event);
+}
